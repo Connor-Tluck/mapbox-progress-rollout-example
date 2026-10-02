@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
+/* ── LaunchDarkly brand fonts ─────────────────────────────────────────── */
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/Sora-Variable.ttf") format("truetype");
+  font-weight: 100 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Soehne-Buch.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne";
+  src: url("/fonts/Soehne-Kraeftig.otf") format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Söhne Mono";
+  src: url("/fonts/SoehneMono-Buch.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ── LaunchDarkly brand tokens ────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ld-black: #191919;
+  --ld-ink-2: #2c2c2c;
+  --ld-gray-01: #f8f8f8;
+  --ld-gray-02: #d1d6d9;
+  --ld-gray-03: #a7a9ac;
+  --ld-gray-04: #6d6e71;
+  --ld-blue: #405bff;
+  --ld-blue-dark: #2a3ba6;
+  --ld-blue-light: #7084ff;
+  --ld-purple: #a34fde;
+  --ld-pink: #ff35a2;
+  --ld-orange: #ff9d29;
+  --ld-cyan: #3dd6f5;
+  --ld-lime: #ddff46;
+
+  --status-off: #e5484d;
+  --status-pending: #f5a623;
+  --status-enabled: #2ebd6b;
+
+  --ld-ease: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ld-black: var(--ld-black);
+  --color-ld-ink-2: var(--ld-ink-2);
+  --color-ld-gray-01: var(--ld-gray-01);
+  --color-ld-gray-02: var(--ld-gray-02);
+  --color-ld-gray-03: var(--ld-gray-03);
+  --color-ld-gray-04: var(--ld-gray-04);
+  --color-ld-blue: var(--ld-blue);
+  --color-ld-blue-dark: var(--ld-blue-dark);
+  --color-ld-blue-light: var(--ld-blue-light);
+  --color-ld-purple: var(--ld-purple);
+  --color-ld-pink: var(--ld-pink);
+  --color-ld-orange: var(--ld-orange);
+  --color-ld-cyan: var(--ld-cyan);
+  --color-ld-lime: var(--ld-lime);
+  --color-status-off: var(--status-off);
+  --color-status-pending: var(--status-pending);
+  --color-status-enabled: var(--status-enabled);
+
+  --font-display: "Sora", "Söhne", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Söhne", var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Söhne Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-ld: var(--ld-ease);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100%;
+  background: var(--ld-black);
+  color: var(--ld-gray-01);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
+
+/* Glass panel used for the control surface. */
+.glass {
+  background: color-mix(in srgb, var(--ld-black) 78%, transparent);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ld-gray-03);
+  font-weight: 500;
+}
+
+/* Status dot with a soft glow. */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
+  background: currentColor;
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.pulse { animation: pulse-soft 1.6s var(--ld-ease) infinite; }
+
+/* Keep the zoom buttons clear of the brand lockup in the top-left. */
+.mapboxgl-ctrl-top-left { top: 64px; }
+.mapboxgl-ctrl-group { background: rgba(25, 25, 25, 0.85) !important; border: 1px solid rgba(255,255,255,0.1); }
+.mapboxgl-ctrl-group button + button { border-top-color: rgba(255,255,255,0.1) !important; }
+.mapboxgl-ctrl-icon { filter: invert(1) opacity(0.85); }
+
+/* Mapbox overrides so the attribution/logo stay subtle on the dark map. */
+.mapboxgl-ctrl-logo { opacity: 0.6; }
+.mapboxgl-ctrl-attrib { background: rgba(25, 25, 25, 0.6) !important; }
+.mapboxgl-ctrl-attrib a { color: var(--ld-gray-03) !important; }
+
+.mapboxgl-popup-content {
+  background: var(--ld-black);
+  color: var(--ld-gray-01);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-sans);
+}
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip { border-top-color: var(--ld-black); }
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip { border-bottom-color: var(--ld-black); }
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip { border-right-color: var(--ld-black); }
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip { border-left-color: var(--ld-black); }
+
+/* Range input styling for the stage scrubber. */
+input[type="range"].scrubber {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--ld-blue) 0%,
+    var(--ld-blue) var(--fill, 0%),
+    rgba(255, 255, 255, 0.12) var(--fill, 0%),
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  outline: none;
+}
+input[type="range"].scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--ld-gray-01);
+  border: 2px solid var(--ld-blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: transform 200ms var(--ld-ease);
+}
+input[type="range"].scrubber::-webkit-slider-thumb:hover { transform: scale(1.1); }
+input[type="range"].scrubber::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--ld-gray-01);
+  border: 2px solid var(--ld-blue);
+  cursor: pointer;
+}
+
+/* Thin scrollbars inside the panel. */
+.scroll-thin { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent; }
+.scroll-thin::-webkit-scrollbar { width: 6px; }
+.scroll-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 9999px; }
